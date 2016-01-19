@@ -9,6 +9,12 @@ var map = L.map('map', {
 map.attributionControl
 .setPrefix('View <a href="http://github.com/OpenDataCT/transit_map">code on GitHub</a>, created with <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
 
+var controlLayers = L.control.layers( null, null, {
+  position: "bottomright", // suggested: bottomright for CT (in Long Island Sound); topleft for Hartford region
+  collapsed: false // false = open by default
+}).addTo(map);
+
+
 // optional: reposition zoom control other than default topleft 
 L.control.zoom({position: "topright"}).addTo(map); 
 
