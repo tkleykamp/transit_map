@@ -33,3 +33,5 @@ $.getJSON(endpointURL, function (data) {
     // marker.bindPopup(popupHTML(container));
     // Add the marker to the layerGroup
     marker.addTo(layerGroup);
+  }
+});
