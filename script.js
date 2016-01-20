@@ -29,7 +29,7 @@ var endpointURL = "http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.js
 // Load data from JSON feed (insert your endointURL above), display with clickable blue markers
 $.getJSON(endpointURL, function (data) {
   // Create new layerGroup for the markers, with option to append ".addTo(map);" to display by default
-  var layerGroup = new L.LayerGroup();
+  var layerGroup = new L.LayerGroup(entity);
   // Add layerGroup to your layer control and insert your label to appear in legend
   controlLayers.addOverlay(layerGroup, 'JSON feed - blue markers'); // Insert your own legend label
   // Start a loop to insert JSON data into container
