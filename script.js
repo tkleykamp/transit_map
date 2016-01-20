@@ -33,7 +33,7 @@ $.getJSON(endpointURL, function (data) {
   // Add layerGroup to your layer control and insert your label to appear in legend
   controlLayers.addOverlay(layerGroup, 'JSON feed - blue markers'); // Insert your own legend label
   // Start a loop to insert JSON data into container
-  for (var i = 0; i < entity.vehicle.position.length; i++) {
+  for (var i = 0; i < entity.vehicle.position; i++) {
     var container = entity.vehicle.position[i];
     var marker = new L.marker([container.latitude, container.longitude]);
     // marker.bindPopup(popupHTML(container));
