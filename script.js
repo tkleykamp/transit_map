@@ -1,37 +1,43 @@
-// set up the map center and zoom level
-var map = L.map('map', {
-  center: [41.76, -72.67], // [41.5, -72.7] for Connecticut; [41.76, -72.67] for Hartford county or city
-  zoom: 10, // zoom 9 for Connecticut; 10 for Hartford county, 12 for Hartford city
-  zoomControl: false // add later to reposition
-});
+  //initialize the leaflet map, set options and view
+    var map = L.map('map');
 
-// optional : customize link to view source code; add your own GitHub repository
-map.attributionControl
-.setPrefix('View <a href="http://github.com/OpenDataCT/transit_map">code on GitHub</a>, created with <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+		L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
-// optional: reposition zoom control other than default topleft 
-L.control.zoom({position: "topright"}).addTo(map); 
+		}).addTo(map);
 
-var lightAll = new L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { 
-attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>' 
-}).addTo(map); //this displays layer by default 
-controlLayers.addBaseLayer(lightAll, 'CartoDB LightAll'); 
+	
 
-//transit data source
-var endpointURL = "http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.json";
+	function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+			
+			L.circleMarker(e.latlng).addTo(map)
+				.bindPopup("You are here").openPopup();
+			
+			
+			//L.circle(e.latlng, radius).addTo(map);
+		}
 
-// Load data from JSON feed (insert your endointURL above), display with clickable blue markers
-$.getJSON(endpointURL, function (data) {
-  // Create new layerGroup for the markers, with option to append ".addTo(map);" to display by default
-  var layerGroup = new L.LayerGroup();
-  // Add layerGroup to your layer control and insert your label to appear in legend
-  controlLayers.addOverlay(layerGroup, 'JSON feed - blue markers'); // Insert your own legend label
-  // Start a loop to insert JSON data into container
-  for (var i = 0; i < entity.vehicle.position.length; i++) {
-    var container = entity.vehicle.position[i];
-    var marker = new L.marker([container.latitude, container.longitude]);
-    // marker.bindPopup(popupHTML(container));
-    // Add the marker to the layerGroup
-    marker.addTo(layerGroup);
-  }
-});
+		function onLocationError(e) {
+			alert(e.message);
+		}
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+		map.locate({setView: true, maxZoom: 12});
+
+
+	var dataUrl ="http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.json"
+
+	$.getJSON(dataUrl, function(data, textstatus) {
+		$.each(data, function(i, entry) {
+		
+    L.geoJson(data, {
+		onEachFeature: function (feature, layer) {
+		layer.bindPopup ('<h4>' + feature.properties.pharmacy + '</h4>' + '</br>' + feature.properties.address + '</br>' + feature.properties.phone)}
+	}).addTo(map)
+		
+		});
+	});
