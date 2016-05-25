@@ -1,27 +1,33 @@
 // set up the map center and zoom level
-var map = L.map('map', {
-  center: [41.76, -72.67], // [41.5, -72.7] for Connecticut; [41.76, -72.67] for Hartford county or city
-  zoom: 10, // zoom 9 for Connecticut; 10 for Hartford county, 12 for Hartford city
-  zoomControl: false // add later to reposition
-});
+//initialize the leaflet map, set options and view
+    var map = L.map('map');
 
-// optional : customize link to view source code; add your own GitHub repository
-map.attributionControl
-.setPrefix('View <a href="http://github.com/OpenDataCT/transit_map">code on GitHub</a>, created with <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+		L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
-var controlLayers = L.control.layers( null, null, {
-  position: "bottomright", // suggested: bottomright for CT (in Long Island Sound); topleft for Hartford region
-  collapsed: false // false = open by default
-}).addTo(map);
+		}).addTo(map);
 
+	
 
-// optional: reposition zoom control other than default topleft 
-L.control.zoom({position: "topright"}).addTo(map); 
+	function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+			
+			L.circleMarker(e.latlng).addTo(map)
+				.bindPopup("You are here").openPopup();
+			
+			
+			//L.circle(e.latlng, radius).addTo(map);
+		}
 
-var lightAll = new L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { 
-attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>' 
-}).addTo(map); //this displays layer by default 
-controlLayers.addBaseLayer(lightAll, 'CartoDB LightAll'); 
+		function onLocationError(e) {
+			alert(e.message);
+		}
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+		map.locate({setView: true, maxZoom: 12});
 
 //transit data source
 var endpointURL = "http://65.213.12.244/realtimefeed/vehicle/vehiclepositions.json";
